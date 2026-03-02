@@ -1,16 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
-export interface Users {
-  id: number;
-  name: string;
-  age: number;
-}
 
 @Injectable()
 export class UsersService {
-  private readonly users: Users[] = [];
+  private readonly users: string[] = [];
 
-  test(): Users[] {
+  test(): string[] {
     return this.users;
   }
 }
