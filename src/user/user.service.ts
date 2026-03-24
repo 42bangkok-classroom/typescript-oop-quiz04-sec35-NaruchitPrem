@@ -46,10 +46,7 @@ export class UserService {
       }
 
       return user;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
+    } catch {
       throw new InternalServerErrorException('Cannot process user data');
     }
   }
@@ -86,7 +83,7 @@ export class UserService {
 
       // 6. ส่งข้อมูล User ที่เพิ่งสร้างเสร็จกลับไป
       return newUser;
-    } catch (error) {
+    } catch {
       throw new InternalServerErrorException('Cannot create user');
     }
   }
