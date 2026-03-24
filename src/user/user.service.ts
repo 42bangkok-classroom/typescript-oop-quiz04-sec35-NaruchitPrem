@@ -46,7 +46,10 @@ export class UserService {
       }
 
       return user;
-    } catch {
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
       throw new InternalServerErrorException('Cannot process user data');
     }
   }
