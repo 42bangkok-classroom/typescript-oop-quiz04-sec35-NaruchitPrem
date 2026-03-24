@@ -30,7 +30,7 @@ export class UserService {
         throw new NotFoundException('User not found');
       }
 
-      if (fields && fields.length > 0) {
+      if (fields) {
         const filteredUser: Partial<IUser> = {};
 
         fields.forEach((field) => {
