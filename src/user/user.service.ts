@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { IUser } from './user.interface';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -17,26 +21,31 @@ export class UserService {
     return users;
   }
 
-  findOne(id: string, fields?: string[]) {
-    const users = this.findAll();
+  findOne(id: string, fields?: string[]): any {
+    try {
+      const users = this.findAll();
+      const user = users.find((u) => String(u.id) === id);
 
-    const user = users.find((u) => String(u.id) === String(id));
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
 
-    // 2. ถ้าไม่พบ User ให้ throw NotFoundException (จะได้ 404 ทันที)
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+      if (fields && fields.length > 0) {
+        const filteredUser: any = {};
+        fields.forEach((field) => {
+          if (user[field] !== undefined) {
+            filteredUser[field] = user[field];
+          }
+        });
+        return filteredUser;
+      }
 
-    // 3. ถ้าพบ User และมีการส่ง fields มา ให้ filter ข้อมูล
-    if (fields && fields.length > 0) {
-      const filteredUser = {};
-      fields.forEach((field) => {
-        const key = field.trim(); // กันกรณีมี space เช่น 'firstName, lastName'
-        if (user[key] !== undefined) {
-          filteredUser[key] = user[key];
-        }
-      });
-      return filteredUser;
+      return user;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Cannot process user data');
     }
   }
 }

@@ -1,5 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { UserService } from './user.service';
+import { IUser } from './user.interface';
 
 @Controller('users')
 export class UserController {
@@ -16,15 +17,13 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(
-    @Param('id') id: string,
-    @Query('fields') fields?: string, // รับเป็น String ก่อน เช่น 'firstName,lastName'
-  ) {
-    // แปลง String ที่มี comma กั้น ให้กลายเป็น Array
-    // ถ้าไม่มีการส่ง fields มา จะให้ค่าเป็น undefined
-    const fieldsArray = fields ? fields.split(',') : undefined;
+  findOne(@Param('id') id: string, @Query('fields') fields?: string): any {
+    let fieldsArray: string[] | undefined;
 
-    // เรียกใช้งาน Service พร้อมส่งตัวแปรไป
+    if (fields) {
+      fieldsArray = fields.split(',').map((field) => field.trim());
+    }
+
     return this.userService.findOne(id, fieldsArray);
   }
 }
