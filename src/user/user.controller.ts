@@ -1,6 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { UserService } from './user.service';
-import { IUser } from './user.interface';
 
 @Controller('users')
 export class UserController {
@@ -17,7 +16,7 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @Query('fields') fields?: string): any {
+  findOne(@Param('id') id: string, @Query('fields') fields?: string) {
     let fieldsArray: string[] | undefined;
 
     if (fields) {

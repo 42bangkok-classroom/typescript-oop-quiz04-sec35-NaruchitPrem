@@ -21,7 +21,7 @@ export class UserService {
     return users;
   }
 
-  findOne(id: string, fields?: string[]): any {
+  findOne(id: string, fields?: string[]) {
     try {
       const users = this.findAll();
       const user = users.find((u) => String(u.id) === id);
@@ -31,12 +31,16 @@ export class UserService {
       }
 
       if (fields && fields.length > 0) {
-        const filteredUser: any = {};
+        const filteredUser: Partial<IUser> = {};
+
         fields.forEach((field) => {
-          if (user[field] !== undefined) {
-            filteredUser[field] = user[field];
+          const key = field as keyof IUser;
+
+          if (user[key] !== undefined) {
+            filteredUser[key] = user[key] as never;
           }
         });
+
         return filteredUser;
       }
 
